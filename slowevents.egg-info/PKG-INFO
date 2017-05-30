@@ -1,0 +1,29 @@
+Metadata-Version: 1.1
+Name: slowevents
+Version: 0.1
+Summary: Custom made app for middleman transactions
+Home-page: https://www.slowevents.io/
+Author: Davide Pugliese
+Author-email: dvd.pugliese@gmail.com
+License: Copyright 2017
+Description: Matty: Middleman app for transactions
+        #########################################
+        
+        Matty is a middleman app to handle providers of different services and clients.
+        
+        
+        
+        
+        
+Platform: UNKNOWN
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Flask
+Classifier: Framework :: Flask :: 0.12
+Classifier: Intended Audience :: Developers
+Classifier: License :: Copyright 2017
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content

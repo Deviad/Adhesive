@@ -1,0 +1,6 @@
+README.rst
+setup.py
+slowevents.egg-info/PKG-INFO
+slowevents.egg-info/SOURCES.txt
+slowevents.egg-info/dependency_links.txt
+slowevents.egg-info/top_level.txt
