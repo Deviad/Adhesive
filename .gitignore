@@ -1,4 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
+.DS_Store
+
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -95,3 +97,10 @@ ENV/
 # Rope project settings
 .ropeproject
 
+/.idea/
+.gitignore
+include/
+!/.gitignore
+/bin/
+/pyvenv.cfg
+/pip-selfcheck.json

@@ -15,7 +15,7 @@ class CurrentUserHelper:
     def __init__(self):
         pass
 
-    def __new__(cls):
+    def __new__(cls) -> User or bool:
         return cls.get_current_user()
 
     @classmethod
@@ -23,12 +23,18 @@ class CurrentUserHelper:
         if request.content_type == 'application/json':
             token_user_email = get_jwt_identity()
 
-            try:
-                user = User.query.filter_by(email=token_user_email).first()
-                return user
-            except SQLAlchemyError as e:
-                db.session.close()
-                return e
-            except AttributeError as e:
-                db.session.close()
-                return e
+            if token_user_email:
+                try:
+                    user = User.query.filter_by(email=token_user_email).first()
+                    return user
+                except SQLAlchemyError as e:
+                    db.session.close()
+                    return e
+                except AttributeError as e:
+                    db.session.close()
+                    return e
+
+            else:
+                response = json.jsonify({"status": "fail"})
+                response.status_code = 401
+                return response

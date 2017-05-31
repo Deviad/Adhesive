@@ -5,6 +5,7 @@ from app.users_bundle.models.user import User
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from app.users_bundle.helpers.current_user_helper import CurrentUserHelper
+from app.users_bundle.helpers.router_acl import current_user_only
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.config.from_object('config.DevelopmentConfig')
@@ -70,12 +71,11 @@ def signup():
 
 @users_bundle.route("/user/edit", methods=['GET'])
 @jwt_required
-def edit_current_user():
+@current_user_only
+def edit_user():
     if request.method == 'GET':
         if request.content_type == 'application/json':
-
             current_user = CurrentUserHelper()
-
             if current_user:
                 response = json.jsonify({"status": "success", "data": current_user.as_dict()})
                 response.status_code = 200

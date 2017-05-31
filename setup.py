@@ -8,14 +8,14 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='slowevents',
+    name='adhesive',
     version='0.1',
     packages=find_packages(),
     include_package_data=True,
-    license='Copyright 2017',  # example license
-    description='Custom made app for middleman transactions',
+    license='MIT License',  # example license
+    description='Custom made middleman app',
     long_description=README,
-    url='https://www.slowevents.io/',
+    url='https://www.enligthening.io/',
     author='Davide Pugliese',
     author_email='dvd.pugliese@gmail.com',
     classifiers=[
@@ -23,7 +23,7 @@ setup(
         'Framework :: Flask',
         'Framework :: Flask :: 0.12.2',
         'Intended Audience :: Developers',
-        'License :: Copyright 2017',  # example license
+        'License :: MIT License',  # example license
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',

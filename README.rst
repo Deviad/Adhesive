@@ -1,8 +1,7 @@
-Matty: Middleman app for transactions
+Adhesive: Framework for the creation of middlemen
 #########################################
 
-Matty is a middleman app to handle providers of different services and clients.
-
+Adhesive is a framework for the creation of middlemen.
 
 
 
