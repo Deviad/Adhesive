@@ -1,12 +1,10 @@
 from flask import Blueprint, request, render_template, json, Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.bcrypt import Bcrypt
-from sqlalchemy.orm import load_only
-
-from app.users_bundle.models import User
+from app.users_bundle.models.user import User
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
-
+from app.users_bundle.helpers.current_user_helper import CurrentUserHelper
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.config.from_object('config.DevelopmentConfig')
@@ -39,6 +37,7 @@ def do_the_signin(the_email, password):
         response = json.jsonify({"status": "fail"})
         response.status_code = 400
         return response
+
 
 def do_the_signup(email, password):
     # return json.jsonify({'username': username, 'password': password})
@@ -74,21 +73,11 @@ def signup():
 def edit_current_user():
     if request.method == 'GET':
         if request.content_type == 'application/json':
-            user_id = request.args.get('id')
-            token_user_email = get_jwt_identity()
-            parameter_user_email = None
-            try:
-                for email in db.session.query(User.email).filter_by(id=user_id).one():
-                    parameter_user_email = email
-            except (SQLAlchemyError, AttributeError):
-                db.session.close()
-                response = json.jsonify({"status": "fail"})
-                response.status_code = 400
-                return response
 
-            if token_user_email == parameter_user_email:
-                user = User.query.filter_by(id=user_id).first()
-                response = json.jsonify({"status": "success", "data": user.as_dict()})
+            current_user = CurrentUserHelper()
+
+            if current_user:
+                response = json.jsonify({"status": "success", "data": current_user.as_dict()})
                 response.status_code = 200
                 return response
             else:

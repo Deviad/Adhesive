@@ -1,5 +1,12 @@
 README.rst
 setup.py
+app/__init__.py
+app/users_bundle/__init__.py
+app/users_bundle/controllers.py
+app/users_bundle/helpers/__init__.py
+app/users_bundle/helpers/current_user_helper.py
+app/users_bundle/models/__init__.py
+app/users_bundle/models/user.py
 slowevents.egg-info/PKG-INFO
 slowevents.egg-info/SOURCES.txt
 slowevents.egg-info/dependency_links.txt

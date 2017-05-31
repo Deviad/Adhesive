@@ -21,7 +21,7 @@ setup(
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Flask',
-        'Framework :: Flask :: 0.12',  
+        'Framework :: Flask :: 0.12.2',
         'Intended Audience :: Developers',
         'License :: Copyright 2017',  # example license
         'Operating System :: OS Independent',
