@@ -40,7 +40,6 @@ def do_the_signin(the_email, password):
         response.status_code = 400
         return response
 
-
 def do_the_signup(email, password):
     # return json.jsonify({'username': username, 'password': password})
     try:
@@ -70,21 +69,32 @@ def signup():
             return do_the_signup(username, password)
 
 
-@users_bundle.route("/user/edit/<user_id>", methods=['GET'])
+@users_bundle.route("/user/edit", methods=['GET'])
 @jwt_required
-def edit_current_user(user_id):
+def edit_current_user():
     if request.method == 'GET':
         if request.content_type == 'application/json':
-            print('Bla bla' + get_jwt_identity())
+            user_id = request.args.get('id')
             token_user_email = get_jwt_identity()
             parameter_user_email = None
-            for email in db.session.query(User.email).filter_by(id=user_id).one():
-                parameter_user_email = email
-                print(parameter_user_email)
+            try:
+                for email in db.session.query(User.email).filter_by(id=user_id).one():
+                    parameter_user_email = email
+            except (SQLAlchemyError, AttributeError):
+                db.session.close()
+                response = json.jsonify({"status": "fail"})
+                response.status_code = 400
+                return response
+
             if token_user_email == parameter_user_email:
                 user = User.query.filter_by(id=user_id).first()
                 response = json.jsonify({"status": "success", "data": user.as_dict()})
                 response.status_code = 200
+                return response
+            else:
+                db.session.close()
+                response = json.jsonify({"status": "fail"})
+                response.status_code = 403
                 return response
 
 
