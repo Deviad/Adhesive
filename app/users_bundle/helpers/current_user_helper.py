@@ -21,21 +21,14 @@ class CurrentUserHelper:
     @classmethod
     def get_current_user(cls) -> User or bool:
         if request.content_type == 'application/json':
-            user_id = request.args.get('id')
             token_user_email = get_jwt_identity()
-            parameter_user_email = None
+
             try:
-                for email in db.session.query(User.email).filter_by(id=user_id).one():
-                    parameter_user_email = email
+                user = User.query.filter_by(email=token_user_email).first()
+                return user
             except SQLAlchemyError as e:
                 db.session.close()
                 return e
             except AttributeError as e:
                 db.session.close()
                 return e
-            if token_user_email == parameter_user_email:
-                user = User.query.filter_by(id=user_id).first()
-                return user
-            else:
-                db.session.close()
-                return False
