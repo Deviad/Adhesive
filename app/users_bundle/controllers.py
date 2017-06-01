@@ -36,7 +36,7 @@ def do_the_signin(the_email, password):
     except (SQLAlchemyError, AttributeError):
         db.session.close()
         response = json.jsonify({"status": "fail"})
-        response.status_code = 400
+        response.status_code = 500
         return response
 
 
@@ -55,7 +55,7 @@ def do_the_signup(email, password):
     except SQLAlchemyError:
         db.session.close()
         response = json.jsonify({"status": "fail"})
-        response.status_code = 400
+        response.status_code = 500
         return response
 
 

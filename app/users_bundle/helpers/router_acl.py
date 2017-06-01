@@ -11,6 +11,11 @@ from injector import Module, Key, provider, Injector, inject, singleton
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
 db = SQLAlchemy(app)
+'''
+This module provides a function decorator to use with your routing functions that allows to establish
+who has access to a given resource. For the sake of clarity I associate some constants to the numbers that represent
+each one of the access levels.
+'''
 
 ADMINISTRATOR_ONLY = 0
 USER_ONLY = 1  # user is the current user

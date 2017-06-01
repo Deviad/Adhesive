@@ -1,0 +1,25 @@
+import datetime
+
+
+class Config(object):
+    DEBUG = False
+    TESTING = False
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@127.0.0.1/yourdb'
+    THREADS_PER_PAGE = 4
+    CSRF_ENABLED = True
+    CSRF_SESSION_KEY = "secret"
+    JWT_SECRET_KEY = 'your-secret'
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(minutes=60)
+
+
+class ProductionConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@127.0.0.1/yourdb'
+
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@127.0.0.1/yourdb'
+
+
+class TestingConfig(Config):
+    TESTING = True
