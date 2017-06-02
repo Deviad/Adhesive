@@ -6,10 +6,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
 from theroot.users_bundle.helpers.router_acl import router_acl
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
-app.config.from_object('config.DevelopmentConfig')
-db = SQLAlchemy(app)
+
+bcrypt = Bcrypt()
+db = SQLAlchemy()
 
 
 users_bundle = Blueprint("user", __name__, url_prefix="/api")
@@ -42,7 +41,7 @@ def do_the_signin(the_email, password):
 
 def do_the_signup(email, password):
     # return json.jsonify({'username': username, 'password': password})
-    # try:
+    try:
         user = User(email, hash_password(password))
         db.session.add(user)
         db.session.commit()
@@ -52,11 +51,11 @@ def do_the_signup(email, password):
         response.status_code = 201
         return response
 
-    # except SQLAlchemyError:
-    #     db.session.close()
-    #     response = json.jsonify({"status": "fail"})
-    #     response.status_code = 500
-    #     return response
+    except SQLAlchemyError:
+        db.session.close()
+        response = json.jsonify({"status": "fail"})
+        response.status_code = 400
+        return response
 
 
 @users_bundle.route("/user", methods=['POST'])

@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
@@ -20,5 +21,6 @@ def create_app():
         print('The database exists: ' + str(database_exists(engine.url)))
     app.register_blueprint(users_bundle)
     db = SQLAlchemy()
+    Bcrypt(app)
     db.init_app(app)
     return app
