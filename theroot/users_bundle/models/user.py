@@ -8,7 +8,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), unique=False, nullable=False)
-    user_info = db.relationship("UserInfo", uselist=False, backref="users")
+    user_info = db.relationship("UserInfo", uselist=False, back_populates="users")
 
     def __init__(self, email, password):
         self.email = email

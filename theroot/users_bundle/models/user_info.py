@@ -11,7 +11,7 @@ class UserInfo(db.Model):
     linkedin_id = db.Column(db.String(255), unique=True, nullable=True)
     twitter_id = db.Column(db.String(255), unique=True, nullable=True)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    users_back = db.relationship("User", back_populates="user_info")  # user_info refers to the property in User class.
+    users = db.relationship("User", back_populates="user_info")  # user_info refers to the property in User class.
 
     def __init__(self, email, password):
         self.email = email

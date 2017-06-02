@@ -19,7 +19,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), unique=False, nullable=False)
-    user_info = db.relationship("UserInfo", uselist=False, backref="users")
+    user_info = db.relationship("UserInfo", uselist=False, back_populates="users")
 
 
 class UserInfo(db.Model):
@@ -32,7 +32,7 @@ class UserInfo(db.Model):
     linkedin_id = db.Column(db.String(255), unique=True, nullable=True)
     twitter_id = db.Column(db.String(255), unique=True, nullable=True)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    users_back = db.relationship("User", back_populates="user_info")  # user_info refers to the property in User class.
+    users = db.relationship("User", back_populates="user_info")  # user_info refers to the property in User class.
 
 if __name__ == '__main__':
     manager.run()
