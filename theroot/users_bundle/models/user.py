@@ -1,9 +1,5 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
-app.config.from_object('config.DevelopmentConfig')
-db = SQLAlchemy(app)
+from theroot.users_bundle.models import db
 
 
 class User(db.Model):
@@ -12,7 +8,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), unique=False, nullable=False)
-    child = db.relationship("UserInfo", uselist=False, backref="parent")
+    user_info = db.relationship("UserInfo", uselist=False, backref="users")
 
     def __init__(self, email, password):
         self.email = email

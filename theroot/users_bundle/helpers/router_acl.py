@@ -2,8 +2,8 @@ from flask import Blueprint, request, render_template, json, Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.bcrypt import Bcrypt
 
-from app.users_bundle.helpers.current_user_helper import CurrentUserHelper
-from app.users_bundle.models.user import User
+from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
+from theroot.users_bundle.models.user import User
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from injector import Module, Key, provider, Injector, inject, singleton

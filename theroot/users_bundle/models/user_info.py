@@ -1,22 +1,17 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-
-
-app = Flask(__name__)
-app.config.from_object('config.DevelopmentConfig')
-db = SQLAlchemy(app)
+from theroot.users_bundle.models import db
 
 
 class UserInfo(db.Model):
     __tablename__ = 'user_info'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('id'))
     first_name = db.Column(db.String(255), unique=False, nullable=False)
     last_name = db.Column(db.String(255), unique=False, nullable=False)
     facebook_id = db.Column(db.String(255), unique=True, nullable=True)
     linkedin_id = db.Column(db.String(255), unique=True, nullable=True)
     twitter_id = db.Column(db.String(255), unique=True, nullable=True)
+    users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    users_back = db.relationship("User", back_populates="user_info")  # user_info refers to the property in User class.
 
     def __init__(self, email, password):
         self.email = email
