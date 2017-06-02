@@ -18,8 +18,13 @@ each one of the access levels.
 '''
 
 ADMINISTRATOR_ONLY = 0
-USER_ONLY = 1  # user is the current user
-ADMINISTRATOR_OR_USER = 2  # user is the current user
+USER_ONLY = 1  # USER is the current user
+ADMINISTRATOR_OR_USER = 2  # USER is the current user
+
+# This is how we create function decorators in Python, which are used in order
+# to modify the behavior of a function at run type.
+# I use this pattern in order to separate the ACL logic from the "front-end" controller,
+# making the code more solid.
 
 
 def router_acl(user_type):
