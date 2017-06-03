@@ -36,6 +36,7 @@ class CurrentUserHelper(User):
             if token_user_email:
                 try:
                     user = db.session.query(User).filter(User.email == token_user_email).first()
+                    db.session.close()
                     print('Our great user is here: ')
                     pprint(user)
                     return user

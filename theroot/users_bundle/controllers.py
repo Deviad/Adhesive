@@ -27,6 +27,7 @@ def hash_password(password):
 def do_the_signin(the_email, password):
     try:
         user = User.query.filter_by(email=the_email).first()
+        db.session.close()
         pw_hash = user.password
         if bcrypt.check_password_hash(pw_hash, password):
             response = json.jsonify({"status": "success", "data": {"access_token": create_access_token(identity=user.email)}})
@@ -113,7 +114,7 @@ def edit_user():
             pprint(current_user.id)
             current_user_info = UserInfo.query.filter_by(users_id=current_user.id).first()
             if current_user:
-
+                db.session()
                 for key, value in request.json['data'].items():
                     if key in only:
                         if key == 'email':
@@ -124,6 +125,7 @@ def edit_user():
                         else:
                             setattr(current_user_info, key, value)
                 db.session.commit()
+                db.session.close()
                 # db.session.add(current_user)
                 response = json.jsonify({"status": "success"})
                 response.status_code = 200
