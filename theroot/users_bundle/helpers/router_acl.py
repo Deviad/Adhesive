@@ -1,3 +1,5 @@
+from functools import wraps
+
 from flask import request, json
 from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
 
@@ -20,11 +22,12 @@ ADMINISTRATOR_OR_USER = 2  # USER is the current user
 
 def router_acl(user_type):
     def router_acl_decorator(fn):
+        @wraps(fn)  # it basically updates the context with the new function, variables, etc.
         def func_wrapper(*args, **kwargs):
             current_user = CurrentUserHelper()
 
             if user_type == USER_ONLY:
-                if current_user.id == int(request.args.get('id')):
+                if current_user.id == int(request.args.get('user_id')):
                     return fn()
                 else:
                     # you can test this by changing status to whatever you like and

@@ -10,7 +10,7 @@ class Config(object):
     CSRF_SESSION_KEY = "secret"
     JWT_SECRET_KEY = 'your-secret'
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(minutes=60)
-
+    GOOGLE_API_KEY = your_api_key
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@127.0.0.1/yourdb'

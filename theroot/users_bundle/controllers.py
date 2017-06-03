@@ -83,8 +83,32 @@ def signup():
 @users_bundle.route("/user/view", methods=['GET'])
 @jwt_required
 @router_acl(1)
-def edit_user():
+def view_user():
     if request.method == 'GET':
+        if request.content_type == 'application/json':
+            current_user = CurrentUserHelper()
+            pprint(current_user.id)
+            current_user_info = UserInfo.query.filter_by(users_id=current_user.id).first()
+            if current_user:
+                response = json.jsonify({"status": "success",
+                                         "data": {'user': current_user.as_dict(),
+                                                  'user_info': current_user_info.as_dict()
+                                                  }
+                                         })
+                response.status_code = 200
+                return response
+            else:
+                db.session.close()
+                response = json.jsonify({"status": "fail"})
+                response.status_code = 403
+                return response
+
+
+@users_bundle.route("/user/edit", methods=['POST'])
+@jwt_required
+@router_acl(1)
+def edit_user():
+    if request.method == 'POST':
         if request.content_type == 'application/json':
             current_user = CurrentUserHelper()
             pprint(current_user.id)
