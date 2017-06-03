@@ -3,7 +3,6 @@ from pprint import pprint
 
 import sys
 from flask import Blueprint, request, render_template, json, Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask.ext.bcrypt import Bcrypt
 
 from theroot.users_bundle.models.user import User
@@ -13,10 +12,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
 from theroot.users_bundle.helpers.router_acl import router_acl
+from theroot.users_bundle.models import db
 
 bcrypt = Bcrypt()
-db = SQLAlchemy()
-
 
 users_bundle = Blueprint("user", __name__, url_prefix="/api")
 
@@ -125,10 +123,7 @@ def edit_user():
                             setattr(current_user, key, bcrypt.generate_password_hash(value))
                         else:
                             setattr(current_user_info, key, value)
-
-                current_user.query.filter_by(id=current_user.id).update({'email': 'cazzo@gmail.com'})
                 db.session.commit()
-                db.session.close()
                 # db.session.add(current_user)
                 response = json.jsonify({"status": "success"})
                 response.status_code = 200

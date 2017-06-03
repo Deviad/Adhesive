@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from flask import Blueprint, request, render_template, json, Flask
 from theroot.users_bundle.models.user import User
 from sqlalchemy.exc import SQLAlchemyError
@@ -30,10 +32,12 @@ class CurrentUserHelper(User):
                                                 # a user object or a boolean.
         if request.content_type == 'application/json':
             token_user_email = get_jwt_identity()
-
+            print('the email in the token is ' + token_user_email)
             if token_user_email:
                 try:
-                    user = User.query.filter_by(email=token_user_email).first()
+                    user = db.session.query(User).filter(User.email == token_user_email).first()
+                    print('Our great user is here: ')
+                    pprint(user)
                     return user
                 except SQLAlchemyError as e:
                     db.session.close()

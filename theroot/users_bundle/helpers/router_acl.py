@@ -1,4 +1,5 @@
 from functools import wraps
+from pprint import pprint
 
 from flask import request, json
 from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
@@ -43,6 +44,10 @@ def router_acl(user_type):
                     return response
             elif request.method == 'POST':
                 if user_type == USER_ONLY:
+                    print('let\'s print the request')
+                    pprint(request.json)
+                    print('let\'s print the current_user')
+                    pprint(current_user)
                     if current_user.id == int(request.json['data']['id']):
                         return fn()
                     else:
