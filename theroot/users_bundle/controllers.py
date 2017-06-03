@@ -20,6 +20,8 @@ db = SQLAlchemy()
 
 users_bundle = Blueprint("user", __name__, url_prefix="/api")
 
+only = ['email', 'password', 'first_name', 'last_name', 'facebook_id', 'linkedin_id', 'twitter_id', 'users_id']
+
 
 def hash_password(password):
     pw_hash = bcrypt.generate_password_hash(password)

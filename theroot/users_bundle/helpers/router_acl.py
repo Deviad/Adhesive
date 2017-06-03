@@ -25,21 +25,30 @@ def router_acl(user_type):
         @wraps(fn)  # it basically updates the context with the new function, variables, etc.
         def func_wrapper(*args, **kwargs):
             current_user = CurrentUserHelper()
-
-            if user_type == USER_ONLY:
-                if current_user.id == int(request.args.get('user_id')):
-                    return fn()
+            if request.method == 'GET':
+                if user_type == USER_ONLY:
+                    if current_user.id == int(request.args.get('user_id')):
+                        return fn()
+                    else:
+                        # you can test this by changing status to whatever you like and
+                        # then trying to connect to a route with
+                        # a wrong user id e.g. http://localhost:5001/api/user/edit?id=24
+                        response = json.jsonify({"status": "fail"})
+                        response.status_code = 403
+                        return response
+                # this is a fallback in case no valid type is provided
                 else:
-                    # you can test this by changing status to whatever you like and
-                    # then trying to connect to a route with
-                    # a wrong user id e.g. http://localhost:5001/api/user/edit?id=24
                     response = json.jsonify({"status": "fail"})
-                    response.status_code = 403
+                    response.status_code = 400
                     return response
-            # this is a fallback in case no valid type is provided
-            else:
-                response = json.jsonify({"status": "fail"})
-                response.status_code = 400
-                return response
+            elif request.method == 'POST':
+                if user_type == USER_ONLY:
+                    if current_user.id == request.json['data']['user']['id']:
+                        return fn()
+                    else:
+                        response = json.jsonify({"status": "fail"})
+                        response.status_code = 403
+                        return response
+
         return func_wrapper
     return router_acl_decorator
