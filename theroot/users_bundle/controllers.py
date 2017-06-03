@@ -20,8 +20,6 @@ db = SQLAlchemy()
 
 users_bundle = Blueprint("user", __name__, url_prefix="/api")
 
-only = ['email', 'password', 'first_name', 'last_name', 'facebook_id', 'linkedin_id', 'twitter_id', 'users_id']
-
 
 def hash_password(password):
     pw_hash = bcrypt.generate_password_hash(password)
@@ -110,17 +108,29 @@ def view_user():
 @jwt_required
 @router_acl(1)
 def edit_user():
+    only = ['email', 'password', 'first_name', 'last_name', 'facebook_id', 'linkedin_id', 'twitter_id']
     if request.method == 'POST':
         if request.content_type == 'application/json':
             current_user = CurrentUserHelper()
             pprint(current_user.id)
             current_user_info = UserInfo.query.filter_by(users_id=current_user.id).first()
             if current_user:
-                response = json.jsonify({"status": "success",
-                                         "data": {'user': current_user.as_dict(),
-                                                  'user_info': current_user_info.as_dict()
-                                                  }
-                                         })
+
+                for key, value in request.json['data'].items():
+                    if key in only:
+                        if key == 'email':
+                            setattr(current_user, key, value)
+                            pprint(current_user)
+                        if key == 'password':
+                            setattr(current_user, key, bcrypt.generate_password_hash(value))
+                        else:
+                            setattr(current_user_info, key, value)
+
+                current_user.query.filter_by(id=current_user.id).update({'email': 'cazzo@gmail.com'})
+                db.session.commit()
+                db.session.close()
+                # db.session.add(current_user)
+                response = json.jsonify({"status": "success"})
                 response.status_code = 200
                 return response
             else:

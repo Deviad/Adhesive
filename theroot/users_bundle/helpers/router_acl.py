@@ -43,7 +43,7 @@ def router_acl(user_type):
                     return response
             elif request.method == 'POST':
                 if user_type == USER_ONLY:
-                    if current_user.id == request.json['data']['user']['id']:
+                    if current_user.id == int(request.json['data']['id']):
                         return fn()
                     else:
                         response = json.jsonify({"status": "fail"})

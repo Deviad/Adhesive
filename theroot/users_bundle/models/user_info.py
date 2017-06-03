@@ -10,7 +10,7 @@ class UserInfo(db.Model):
     facebook_id = db.Column(db.String(255), unique=True, nullable=True)
     linkedin_id = db.Column(db.String(255), unique=True, nullable=True)
     twitter_id = db.Column(db.String(255), unique=True, nullable=True)
-    users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    users_id = db.Column(db.Integer, db.ForeignKey('users.id', onupdate="cascade"), nullable=False)
     users = db.relationship("User", back_populates="user_info")  # user_info refers to the property in User class.
 
     # def __init__(self, **kwargs):

@@ -14,9 +14,9 @@ the user object.
 '''
 
 
-class CurrentUserHelper:
+class CurrentUserHelper(User):
     def __init__(self):
-        pass
+        super().__init__(self.email, self.password)
 
 # The difference between __init__ and __new__, is that __init__ returns only instances, objects of the same class,
 # whereas __new__ can return something different. New is useful for cases like this where writing a factory would
