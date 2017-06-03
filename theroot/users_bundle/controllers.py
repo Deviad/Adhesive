@@ -1,6 +1,12 @@
+from inspect import getmembers
+from pprint import pprint
+
+import sys
 from flask import Blueprint, request, render_template, json, Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.bcrypt import Bcrypt
+
+from theroot.users_bundle.models import UserInfo
 from theroot.users_bundle.models.user import User
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
@@ -39,12 +45,16 @@ def do_the_signin(the_email, password):
         return response
 
 
-def do_the_signup(email, password):
-    # return json.jsonify({'username': username, 'password': password})
+def do_the_signup(json_attributes):
+  
     try:
-        user = User(email, hash_password(password))
+        user = User(json_attributes['email'], hash_password(json_attributes['password']))
+
         db.session.add(user)
         db.session.commit()
+        user = User.query.filter_by(email=json_attributes['email']).scalar()
+        user_info = UserInfo(json_attributes['first_name'], json_attributes['last_name'], user.id)
+        db.session.add(user_info)
         db.session.close()
         # using jsend standard https://labs.omniti.com/labs/jsend
         response = json.jsonify({"status": "success"})
@@ -62,10 +72,10 @@ def do_the_signup(email, password):
 def signup():
     if request.method == 'POST':
         if request.content_type == 'application/json':
-            username = request.json['email']
-            password = request.json['password']
+            # pprint(request.json)
+            # sys.exit()
             # password = request.args.get('password')
-            return do_the_signup(username, password)
+            return do_the_signup(request.json)
 
 
 @users_bundle.route("/user/edit", methods=['GET'])

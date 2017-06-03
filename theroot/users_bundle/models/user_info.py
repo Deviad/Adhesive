@@ -13,9 +13,17 @@ class UserInfo(db.Model):
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     users = db.relationship("User", back_populates="user_info")  # user_info refers to the property in User class.
 
-    def __init__(self, email, password):
-        self.email = email
-        self.password = password
+    # def __init__(self, **kwargs):
+    #     for key, value in kwargs.items():
+    #         setattr(self, key, value)
+
+    def __init__(self, first_name, last_name, users_id, facebook_id=None, linkedin_id=None, twitter_id=None):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.facebook_id = facebook_id
+        self.linkedin_id = linkedin_id
+        self.twitter_id = twitter_id
+        self.users_id = users_id
 
     def __repr__(self):
         return "<User (id='%r', user_id='%r', first_name='%r', last_name='%r', \
