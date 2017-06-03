@@ -1,14 +1,10 @@
 from flask import Blueprint, request, render_template, json, Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask.ext.bcrypt import Bcrypt
 from theroot.users_bundle.models.user import User
 from sqlalchemy.exc import SQLAlchemyError
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
-from injector import Module, Key, provider, Injector, inject, singleton
+from flask_jwt_extended import get_jwt_identity
 
-app = Flask(__name__)
-app.config.from_object('config.DevelopmentConfig')
-db = SQLAlchemy(app)
+from theroot.users_bundle.helpers import db
+
 '''
 This class simply returns a user object.
 It uses get_jwt_identity() which returns the username contained in the jwt token, 

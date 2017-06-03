@@ -6,8 +6,9 @@ from flask import Blueprint, request, render_template, json, Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.bcrypt import Bcrypt
 
-from theroot.users_bundle.models import UserInfo
 from theroot.users_bundle.models.user import User
+from theroot.users_bundle.models import UserInfo
+
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
@@ -55,6 +56,7 @@ def do_the_signup(json_attributes):
         user = User.query.filter_by(email=json_attributes['email']).scalar()
         user_info = UserInfo(json_attributes['first_name'], json_attributes['last_name'], user.id)
         db.session.add(user_info)
+        db.session.commit()
         db.session.close()
         # using jsend standard https://labs.omniti.com/labs/jsend
         response = json.jsonify({"status": "success"})
@@ -78,15 +80,21 @@ def signup():
             return do_the_signup(request.json)
 
 
-@users_bundle.route("/user/edit", methods=['GET'])
+@users_bundle.route("/user/view", methods=['GET'])
 @jwt_required
 @router_acl(1)
 def edit_user():
     if request.method == 'GET':
         if request.content_type == 'application/json':
             current_user = CurrentUserHelper()
+            pprint(current_user.id)
+            current_user_info = UserInfo.query.filter_by(users_id=current_user.id).first()
             if current_user:
-                response = json.jsonify({"status": "success", "data": current_user.as_dict()})
+                response = json.jsonify({"status": "success",
+                                         "data": {'user': current_user.as_dict(),
+                                                  'user_info': current_user_info.as_dict()
+                                                  }
+                                         })
                 response.status_code = 200
                 return response
             else:

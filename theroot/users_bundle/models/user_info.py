@@ -28,7 +28,7 @@ class UserInfo(db.Model):
     def __repr__(self):
         return "<User (id='%r', user_id='%r', first_name='%r', last_name='%r', \
         facebook_id='%r', linkedin_id='%r', twitter_id='%r')>" \
-        % (self.id, self.user_id, self.first_name, self.last_name, self.facebook_id, self.linkedin_id, self.twitter_id)
+        % (self.id, self.users_id, self.first_name, self.last_name, self.facebook_id, self.linkedin_id, self.twitter_id)
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

@@ -1,16 +1,7 @@
-from flask import Blueprint, request, render_template, json, Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask.ext.bcrypt import Bcrypt
-
+from flask import request, json
 from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
-from theroot.users_bundle.models.user import User
-from sqlalchemy.exc import SQLAlchemyError
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
-from injector import Module, Key, provider, Injector, inject, singleton
 
-app = Flask(__name__)
-app.config.from_object('config.DevelopmentConfig')
-db = SQLAlchemy(app)
+
 '''
 This module provides a function decorator to use with your routing functions that allows to establish
 who has access to a given resource. For the sake of clarity I associate some constants to the numbers that represent
@@ -45,7 +36,7 @@ def router_acl(user_type):
             # this is a fallback in case no valid type is provided
             else:
                 response = json.jsonify({"status": "fail"})
-                response.status_code = 500
+                response.status_code = 400
                 return response
         return func_wrapper
     return router_acl_decorator
