@@ -19,13 +19,18 @@ def get_user_roles(user_id):
     # The above query, in fact, returns a list of sets made of a single element like [(value1, ), (value2, )]"
     # which is not suitable for our purposes.
     pprint(the_roles)
-    response = []
-    length = len(the_roles)
-    for key in range(length):
-        the_roles[key] = list(the_roles[key])
-        response.append(the_roles[key][0])
+    # response = []
+    # length = len(the_roles)
+    # for key in range(length):
+    #     the_roles[key] = list(the_roles[key])
+    #     response.append(the_roles[key][0])
+    #
+    # return response
 
-    return response
+    # we can generate response object using list comprehension and tuple unpacking
+
+    return [value for (value,) in the_roles]
+
     # return db.session.query(Role.role).filter(User.id == user_id).all()
 
 

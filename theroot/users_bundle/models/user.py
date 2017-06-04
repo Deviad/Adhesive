@@ -1,10 +1,8 @@
-
 from theroot.db import *
 
-
 role_user_table = db.Table('role_user', db.Model.metadata,
-                    db.Column('users_id', db.Integer, db.ForeignKey('users.id')),
-                    db.Column('roles_id', db.Integer, db.ForeignKey('roles.id')))
+                           db.Column('users_id', db.Integer, db.ForeignKey('users.id')),
+                           db.Column('roles_id', db.Integer, db.ForeignKey('roles.id')))
 
 
 class User(db.Model):
