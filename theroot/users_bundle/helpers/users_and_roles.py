@@ -15,6 +15,9 @@ from theroot.users_bundle.models import Role
 def get_user_roles(user_id):
 
     the_roles = db.session.query(Role.role).filter(Role.users.any(id=user_id)).all()
+    # The following lines of code create a list of values.
+    # The above query, in fact, returns a list of sets made of a single element like [(value1, ), (value2, )]"
+    # which is not suitable for our purposes.
     pprint(the_roles)
     response = []
     length = len(the_roles)
