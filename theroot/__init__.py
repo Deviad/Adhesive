@@ -15,6 +15,7 @@ engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 if not database_exists(engine.url):
     print('Creating the database')
     create_database(engine.url)
+    db.create_all()
 else:
     print('The database exists: ' + str(database_exists(engine.url)))
 app.register_blueprint(users_bundle)

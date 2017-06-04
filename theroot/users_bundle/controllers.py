@@ -106,7 +106,7 @@ def view_user():
 
 @users_bundle.route("/user/edit", methods=['POST'])
 @jwt_required
-@router_acl(1)
+@router_acl(0)
 def edit_user():
     only = ['email', 'password', 'first_name', 'last_name', 'facebook_id', 'linkedin_id', 'twitter_id']
     email_change = False

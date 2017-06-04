@@ -1,9 +1,10 @@
 from functools import wraps
 from pprint import pprint
 
+import sys
 from flask import request, json
 from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
-
+from theroot.users_bundle.helpers.users_and_roles import get_user_roles
 
 '''
 This module provides a function decorator to use with your routing functions that allows to establish
@@ -49,6 +50,18 @@ def router_acl(user_type):
                     print('let\'s print the current_user')
                     pprint(current_user)
                     if current_user.id == int(request.json['data']['id']):
+                        return fn()
+
+                    else:
+                        response = json.jsonify({"status": "fail"})
+                        response.status_code = 403
+                        return response
+                elif user_type == ADMINISTRATOR_ONLY:
+                    roles = get_user_roles(current_user.id)
+                    print('Let\'s print the user\'s roles')
+                    pprint(roles)
+
+                    if ADMINISTRATOR_ONLY in roles:
                         return fn()
                     else:
                         response = json.jsonify({"status": "fail"})

@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from theroot.users_bundle.models.role import Role
+from theroot.users_bundle.models import *
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
@@ -21,9 +21,9 @@ class DB(object):
 @manager.command
 def seed():
     print('Add seed data to the database.')
-    for i in range(1):
-        role = Role(i)
-        db.session.add(role)
+    for i in range(2):
+        the_role = Role(i)
+        db.session.add(the_role)
     db.session.commit()
     db.session.close()
 

@@ -10,7 +10,7 @@ from theroot.db import *
 '''
 This class simply returns a user object.
 It uses get_jwt_identity() which returns the username contained in the jwt token, 
-in this case the username is the same e-mail address used for registration.
+in this case the username is the same e-mail address as the one used for registration.
 Therefore, being the e-mail address unique, we proceed querying the database to retrieve
 the user object.
 '''

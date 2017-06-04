@@ -7,7 +7,7 @@ class Role(db.Model):
     __tablename__ = 'roles'
 
     id = db.Column(db.Integer, primary_key=True)
-    role = db.Column(db.Integer, unique=True, nullable=False)
+    role = db.Column(db.Integer, primary_key=True, autoincrement=False)
     users = db.relationship("User", secondary=role_user_table, back_populates="roles")
 
     def __init__(self, role_name):
