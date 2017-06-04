@@ -1,4 +1,4 @@
-from theroot.users_bundle.models import db
+from theroot.db import *
 
 
 class UserInfo(db.Model):

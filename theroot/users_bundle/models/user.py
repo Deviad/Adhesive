@@ -1,5 +1,5 @@
 
-from theroot.users_bundle.models import db
+from theroot.db import *
 
 
 class User(db.Model):

@@ -4,6 +4,7 @@ from pprint import pprint
 import sys
 from flask import Blueprint, request, render_template, json, Flask
 from flask.ext.bcrypt import Bcrypt
+from sqlalchemy import create_engine
 
 from theroot.users_bundle.models.user import User
 from theroot.users_bundle.models import UserInfo
@@ -12,9 +13,14 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
 from theroot.users_bundle.helpers.router_acl import router_acl
-from theroot.users_bundle.models import db
+from theroot.db import *
 
 bcrypt = Bcrypt()
+app = Flask(__name__)
+app.config.from_object('config.DevelopmentConfig')
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'],
+                       encoding='utf8', echo=True)
+
 
 users_bundle = Blueprint("user", __name__, url_prefix="/api")
 
@@ -114,16 +120,15 @@ def edit_user():
             pprint(current_user.id)
             current_user_info = UserInfo.query.filter_by(users_id=current_user.id).first()
             if current_user:
-                db.session()
                 for key, value in request.json['data'].items():
                     if key in only:
                         if key == 'email':
                             setattr(current_user, key, value)
-                            pprint(current_user)
                         if key == 'password':
                             setattr(current_user, key, bcrypt.generate_password_hash(value))
                         else:
                             setattr(current_user_info, key, value)
+                pprint(current_user)
                 db.session.commit()
                 db.session.close()
                 # db.session.add(current_user)

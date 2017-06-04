@@ -5,7 +5,7 @@ from theroot.users_bundle.models.user import User
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import get_jwt_identity
 
-from theroot.users_bundle.helpers import db
+from theroot.db import *
 
 '''
 This class simply returns a user object.
@@ -36,7 +36,6 @@ class CurrentUserHelper(User):
             if token_user_email:
                 try:
                     user = db.session.query(User).filter(User.email == token_user_email).first()
-                    db.session.close()
                     print('Our great user is here: ')
                     pprint(user)
                     return user
