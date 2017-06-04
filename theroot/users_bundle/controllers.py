@@ -4,7 +4,6 @@ from pprint import pprint
 import sys
 from flask import Blueprint, request, render_template, json, Flask
 from flask.ext.bcrypt import Bcrypt
-from sqlalchemy import create_engine
 
 from theroot.users_bundle.models.user import User
 from theroot.users_bundle.models import UserInfo
@@ -16,10 +15,6 @@ from theroot.users_bundle.helpers.router_acl import router_acl
 from theroot.db import *
 
 bcrypt = Bcrypt()
-app = Flask(__name__)
-app.config.from_object('config.DevelopmentConfig')
-engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'],
-                       encoding='utf8', echo=True)
 
 
 users_bundle = Blueprint("user", __name__, url_prefix="/api")
@@ -114,6 +109,7 @@ def view_user():
 @router_acl(1)
 def edit_user():
     only = ['email', 'password', 'first_name', 'last_name', 'facebook_id', 'linkedin_id', 'twitter_id']
+    email_change = False
     if request.method == 'POST':
         if request.content_type == 'application/json':
             current_user = CurrentUserHelper()
@@ -123,16 +119,36 @@ def edit_user():
                 for key, value in request.json['data'].items():
                     if key in only:
                         if key == 'email':
+                            # we use join to extract the items in the list.
+                            # db.session.query returns a set that needs to be converted into a string in this case.
+                            database_email = ', '.join(db.session.query(User.email).filter_by(id=current_user.id).first())
                             setattr(current_user, key, value)
+                            # print('Has current user email ' + str(current_user.email))
+                            # print('Has database email ' + str(database_email))
+                            if current_user.email != database_email:
+                                email_change = True
+                                # print('Has email chaned? ' + str(email_change))
                         if key == 'password':
                             setattr(current_user, key, bcrypt.generate_password_hash(value))
                         else:
                             setattr(current_user_info, key, value)
                 pprint(current_user)
                 db.session.commit()
-                db.session.close()
+                # print('Has email changed? ' + str(email_change))
+
                 # db.session.add(current_user)
-                response = json.jsonify({"status": "success"})
+                if email_change:
+                    print('Printing again the email ' + current_user.email)
+                    response = json.jsonify(
+                        {"status": "success",
+                         "data": {
+                             "access_token": create_access_token(identity=current_user.email)
+
+                         }
+                         })
+                else:
+                    response = json.jsonify({"status": "success"})
+                db.session.close()
                 response.status_code = 200
                 return response
             else:

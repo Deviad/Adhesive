@@ -45,7 +45,6 @@ class CurrentUserHelper(User):
                 except AttributeError as e:
                     db.session.close()
                     return e
-
             else:
                 response = json.jsonify({"status": "fail"})
                 response.status_code = 401
