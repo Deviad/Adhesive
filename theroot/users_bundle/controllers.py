@@ -86,13 +86,13 @@ def signup():
 def view_user():
     if request.method == 'GET':
         if request.content_type == 'application/json':
-            current_user = CurrentUserHelper()
-            pprint(current_user.id)
-            current_user_info = UserInfo.query.filter_by(users_id=current_user.id).first()
-            if current_user:
+            request_user_id = int(request.args.get('user_id'))
+            if User.query.filter_by(id=request_user_id).scalar():
+                request_user = User.query.filter_by(id=request_user_id).first()
+                request_user_info = UserInfo.query.filter_by(users_id=request_user_id).first()
                 response = json.jsonify({"status": "success",
-                                         "data": {'user': current_user.as_dict(),
-                                                  'user_info': current_user_info.as_dict()
+                                         "data": {'user': request_user.as_dict(),
+                                                  'user_info': request_user_info.as_dict()
                                                   }
                                          })
                 response.status_code = 200
@@ -112,37 +112,37 @@ def edit_user():
     email_change = False
     if request.method == 'POST':
         if request.content_type == 'application/json':
-            current_user = CurrentUserHelper()
-            pprint(current_user.id)
-            current_user_info = UserInfo.query.filter_by(users_id=current_user.id).first()
-            if current_user:
+            request_user_id = int(request.json['data']['id'])
+            if request_user_id:
+                request_user = User.query.filter_by(id=request_user_id).first()
+                request_user_info = UserInfo.query.filter_by(users_id=request_user_id).first()
                 for key, value in request.json['data'].items():
                     if key in only:
                         if key == 'email':
                             # we use join to extract the items in the list.
-                            # db.session.query returns a set that needs to be converted into a string in this case.
-                            database_email = ', '.join(db.session.query(User.email).filter_by(id=current_user.id).first())
-                            setattr(current_user, key, value)
+                            # db.session.query returns a tuple that needs to be converted into a string in this case.
+                            database_email = ', '.join(db.session.query(User.email).filter_by(id=request_user.id).first())
+                            setattr(request_user, key, value)
                             # print('Has current user email ' + str(current_user.email))
                             # print('Has database email ' + str(database_email))
-                            if current_user.email != database_email:
+                            if request_user.email != database_email:
                                 email_change = True
                                 # print('Has email chaned? ' + str(email_change))
                         if key == 'password':
-                            setattr(current_user, key, bcrypt.generate_password_hash(value))
+                            setattr(request_user, key, bcrypt.generate_password_hash(value))
                         else:
-                            setattr(current_user_info, key, value)
-                pprint(current_user)
+                            setattr(request_user_info, key, value)
+                pprint(request_user)
                 db.session.commit()
                 # print('Has email changed? ' + str(email_change))
 
                 # db.session.add(current_user)
                 if email_change:
-                    print('Printing again the email ' + current_user.email)
+                    print('Printing again the email ' + request_user.email)
                     response = json.jsonify(
                         {"status": "success",
                          "data": {
-                             "access_token": create_access_token(identity=current_user.email)
+                             "access_token": create_access_token(identity=request_user.email)
 
                          }
                          })
