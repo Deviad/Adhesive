@@ -2,6 +2,11 @@
 from theroot.db import *
 
 
+role_user_table = db.Table('role_user', db.Model.metadata,
+                    db.Column('users_id', db.Integer, db.ForeignKey('users.id')),
+                    db.Column('roles_id', db.Integer, db.ForeignKey('roles.id')))
+
+
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -9,6 +14,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), unique=False, nullable=False)
     user_info = db.relationship("UserInfo", uselist=False, back_populates="users")
+    roles = db.relationship("Role", secondary=role_user_table, back_populates="users")
 
     def __init__(self, email, password):
         self.email = email
