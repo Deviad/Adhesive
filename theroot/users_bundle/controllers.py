@@ -82,7 +82,7 @@ def signup():
 
 @users_bundle.route("/user/view", methods=['GET'])
 @jwt_required
-@router_acl(1)
+@router_acl(0)
 def view_user():
     if request.method == 'GET':
         if request.content_type == 'application/json':

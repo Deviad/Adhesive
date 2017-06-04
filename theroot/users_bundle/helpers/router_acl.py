@@ -38,6 +38,19 @@ def router_acl(user_type):
                         response = json.jsonify({"status": "fail"})
                         response.status_code = 403
                         return response
+
+                elif user_type == ADMINISTRATOR_ONLY:
+                    roles = get_user_roles(current_user.id)
+                    print('Let\'s print the user\'s roles')
+                    pprint(roles)
+
+                    if ADMINISTRATOR_ONLY in roles:
+                        return fn()
+                    else:
+                        response = json.jsonify({"status": "fail"})
+                        response.status_code = 403
+                        return response
+
                 # this is a fallback in case no valid type is provided
                 else:
                     response = json.jsonify({"status": "fail"})
@@ -67,6 +80,11 @@ def router_acl(user_type):
                         response = json.jsonify({"status": "fail"})
                         response.status_code = 403
                         return response
+                # this is a fallback in case no valid type is provided
+                else:
+                    response = json.jsonify({"status": "fail"})
+                    response.status_code = 400
+                    return response
 
         return func_wrapper
     return router_acl_decorator
