@@ -82,7 +82,7 @@ def signup():
 
 @users_bundle.route("/user/view", methods=['GET'])
 @jwt_required
-@router_acl(0)
+@router_acl(3)
 def view_user():
     if request.method == 'GET':
         if request.content_type == 'application/json':
@@ -106,7 +106,7 @@ def view_user():
 
 @users_bundle.route("/user/edit", methods=['POST'])
 @jwt_required
-@router_acl(0)
+@router_acl(3)
 def edit_user():
     only = ['email', 'password', 'first_name', 'last_name', 'facebook_id', 'linkedin_id', 'twitter_id']
     email_change = False
