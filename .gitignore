@@ -104,3 +104,4 @@ include/
 /bin/
 /pyvenv.cfg
 /pip-selfcheck.json
+/migrations/
