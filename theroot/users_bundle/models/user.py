@@ -1,14 +1,14 @@
 from theroot.db import *
 
 role_user_table = db.Table('role_user', db.Model.metadata,
-                           db.Column('users_id', db.Integer, db.ForeignKey('users.id')),
-                           db.Column('roles_id', db.Integer, db.ForeignKey('roles.id')))
+                           db.Column('users_id', db.Integer, db.ForeignKey('users.id', onupdate="cascade"), nullable=False),
+                           db.Column('roles_id', db.Integer, db.ForeignKey('roles.id', onupdate="cascade"), nullable=False))
 
 
 class User(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), unique=False, nullable=False)
     user_info = db.relationship("UserInfo", uselist=False, back_populates="users")

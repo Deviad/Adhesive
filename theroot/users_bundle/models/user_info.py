@@ -4,7 +4,7 @@ from theroot.db import *
 class UserInfo(db.Model):
     __tablename__ = 'user_info'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     first_name = db.Column(db.String(255), unique=False, nullable=False)
     last_name = db.Column(db.String(255), unique=False, nullable=False)
     facebook_id = db.Column(db.String(255), unique=True, nullable=True)
