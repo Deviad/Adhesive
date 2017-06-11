@@ -1,6 +1,11 @@
 from theroot.db import *
 
 
+address_user_table = db.Table('address_userinfo', db.Model.metadata,
+                              db.Column('users_id', db.Integer, db.ForeignKey('users.id', onupdate="cascade"), nullable=False),
+                              db.Column('addresses_id', db.Integer, db.ForeignKey('addresses.id', onupdate="cascade"), nullable=False))
+
+
 class UserInfo(db.Model):
     __tablename__ = 'user_info'
 
@@ -12,8 +17,9 @@ class UserInfo(db.Model):
     twitter_id = db.Column(db.String(255), unique=True, nullable=True)
     users_id = db.Column(db.Integer, db.ForeignKey('users.id', onupdate="cascade"), nullable=False)
     users = db.relationship("User", back_populates="user_info")  # user_info refers to the property in User class.
+    addresses = db.relationship("Address", secondary=address_user_table, back_populates="user_info")
 
-    # def __init__(self, **kwargs):
+# def __init__(self, **kwargs):
     #     for key, value in kwargs.items():
     #         setattr(self, key, value)
 

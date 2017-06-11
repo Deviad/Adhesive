@@ -1,3 +1,4 @@
+import cgi
 from inspect import getmembers
 from pprint import pprint
 
@@ -6,14 +7,15 @@ from flask import Blueprint, request, render_template, json, Flask
 from flask.ext.bcrypt import Bcrypt
 
 from theroot.users_bundle.models.user import User, role_user_table
-from theroot.users_bundle.models import UserInfo, Role
+from theroot.users_bundle.models import UserInfo, Role, Address
 
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
 from theroot.users_bundle.helpers.router_acl import router_acl
 from theroot.db import *
-
+from html import escape, unescape
+import urllib.request
 bcrypt = Bcrypt()
 
 
@@ -46,6 +48,47 @@ def do_the_signin(the_email, password):
         return response
 
 
+@users_bundle.route("/user/validate_address", methods=['POST'])
+def validate_address():
+    if request.method == 'POST':
+        if request.content_type == 'application/json':
+
+            if 'address' in request.json['data']:
+                address = request.json['data']['address']
+                converted_address = str(cgi.escape(address.replace(" ", "%20").replace(',',  "%44;")).encode("ascii", "xmlcharrefreplace"),'utf-8')
+                print(converted_address)
+                pprint('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=' + converted_address + '&types=address' + '&key=' + app.config.get('GOOGLE_PLACES_API_KEY'))
+            if 'place_id' in request.json['data']:
+                place_id = request.json['data']['place_id']
+            # pprint(address)
+
+            try:
+                if not request.json['data']['selected']:
+                    with urllib.request.urlopen('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=' + converted_address + '&types=address' + '&key=' + app.config.get('GOOGLE_PLACES_API_KEY')) as response:
+                        google_json = json.loads(response.read())
+                    response.status_code = 200
+                    status = 'success'
+                    if google_json['status'] != 'OK':
+                        response.status_code = 400
+                        status = 'fail'
+                    response = json.jsonify({"status": status, "data": google_json})
+                    return response
+                else:
+                    with urllib.request.urlopen('https://maps.googleapis.com/maps/api/place/details/json?placeid=' + place_id + '&key=' + app.config.get('GOOGLE_PLACES_API_KEY')) as response:
+                        google_json = json.loads(response.read())
+                response.status_code = 200
+                status = 'success'
+                if google_json['status'] != 'OK':
+                    response.status_code = 400
+                    status = 'fail'
+                response = json.jsonify({"status": status, "data": google_json})
+                return response
+            except BaseException:
+                response = json.jsonify({"status": "fail"})
+                response.status_code = 500
+                return response
+
+
 def do_the_signup(json_attributes):
   
     # try:
@@ -53,6 +96,16 @@ def do_the_signup(json_attributes):
         db.session.add(user)
         db.session.commit()
         user = User.query.filter_by(email=json_attributes['data']['email']).first()
+
+        address_line = json_attributes['data']['address']['address_line']
+
+        country = json_attributes['data']['address']['country']
+
+
+
+        address = Address(address_line, country, geohash)
+        db.session.add(address)
+
         user_info = UserInfo(json_attributes['data']['first_name'], json_attributes['data']['last_name'], user.id)
         db.session.add(user_info)
         db.session.commit()
