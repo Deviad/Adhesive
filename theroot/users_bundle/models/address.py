@@ -13,8 +13,8 @@ class Address(db.Model):
     user_info = db.relationship("UserInfo", secondary=address_user_table, back_populates="addresses")
 
     def __init__(self, address, country, geohash, the_zip=None):
-            self.address_line = address,
-            self.country = country,
+            self.address_line = address
+            self.country = country
             self.geohash = geohash
             self.zip = the_zip
 

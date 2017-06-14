@@ -2,7 +2,7 @@ from theroot.db import *
 
 
 address_user_table = db.Table('address_userinfo', db.Model.metadata,
-                              db.Column('users_id', db.Integer, db.ForeignKey('users.id', onupdate="cascade"), nullable=False),
+                              db.Column('user_info_id', db.Integer, db.ForeignKey('user_info.id', onupdate="cascade"), nullable=False),
                               db.Column('addresses_id', db.Integer, db.ForeignKey('addresses.id', onupdate="cascade"), nullable=False))
 
 
