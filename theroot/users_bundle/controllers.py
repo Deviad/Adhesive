@@ -16,6 +16,8 @@ from theroot.users_bundle.helpers.router_acl import router_acl
 from theroot.db import *
 from html import escape, unescape
 import urllib.request
+from geohash import encode as geoe, decode as geod
+
 bcrypt = Bcrypt()
 
 
@@ -100,8 +102,8 @@ def do_the_signup(json_attributes):
         address_line = json_attributes['data']['address']['address_line']
 
         country = json_attributes['data']['address']['country']
-
-
+        coordinates = json_attributes['data']['address']['coordinates']
+        geohash = geoe(float(coordinates['lat']), float(coordinates['long']))
 
         address = Address(address_line, country, geohash)
         db.session.add(address)
