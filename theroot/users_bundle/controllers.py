@@ -93,7 +93,7 @@ def validate_address():
 
 def do_the_signup(json_attributes):
   
-    # try:
+    try:
         user = User(json_attributes['data']['email'], hash_password(json_attributes['data']['password']))
         db.session.add(user)
         db.session.commit()
@@ -122,16 +122,16 @@ def do_the_signup(json_attributes):
         response.status_code = 201
         return response
 
-    # except SQLAlchemyError:
-    #     db.session.close()
-    #     response = json.jsonify({"status": "fail"})
-    #     response.status_code = 400
-    #     return response
-    # except BaseException:
-    #     db.session.close()
-    #     response = json.jsonify({"status": "fail"})
-    #     response.status_code = 500
-    #     return response
+    except SQLAlchemyError:
+        db.session.close()
+        response = json.jsonify({"status": "fail"})
+        response.status_code = 400
+        return response
+    except BaseException:
+        db.session.close()
+        response = json.jsonify({"status": "fail"})
+        response.status_code = 500
+        return response
 
 
 @users_bundle.route("/user", methods=['POST'])
