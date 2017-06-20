@@ -1,10 +1,5 @@
-# from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
-# from sqlalchemy.orm import Session, relationship, backref, joinedload_all
-# from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy.orm.collections import attribute_mapped_collection
-
-
 from theroot.db import *
+from theroot.providers_bundle.models.provider import category_provider_table
 
 
 class Category(db.Model):
@@ -12,7 +7,7 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     parent_id = db.Column(db.Integer, db.ForeignKey(id))
     name = db.Column(db.String(255), nullable=False)
-
+    providers = db.relationship("Provider", secondary=category_provider_table, back_populates="categories")
     children = db.relationship(
         "Category",
         # cascade deletions
@@ -33,7 +28,7 @@ class Category(db.Model):
         self.parent = parent
 
     def __repr__(self):
-        return "TreeNode(name=%r, id=%r, parent_id=%r)" % (
+        return "Category(name=%r, id=%r, parent_id=%r)" % (
             self.name,
             self.id,
             self.parent_id

@@ -1,14 +1,17 @@
 
 from theroot.db import *
 
+category_provider_table = db.Table('category_provider', db.Model.metadata,
+                           db.Column('providers_id', db.Integer, db.ForeignKey('providers.id', onupdate="cascade"), nullable=False),
+                           db.Column('categories_id', db.Integer, db.ForeignKey('categories.id', onupdate="cascade"), nullable=False))
+
 
 class Provider(db.Model):
     __tablename__ = 'providers'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Integer, unique=True, autoincrement=False)
-    category = db.Column(db.String(255), unique=False, nullable=False)
-
+    categories = db.relationship("Category", secondary=category_provider_table, back_populates="providers")
 
     def __init__(self, the_name):
         self.name = the_name
