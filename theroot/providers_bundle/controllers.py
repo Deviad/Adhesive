@@ -16,8 +16,6 @@ categories_bundle = Blueprint("categories_bundle", __name__, url_prefix="/api")
 @router_acl(3)
 def add_category():
     try:
-        # TODO: add an if statement that verifies if the parent category exists before attempting
-        # to add a child_category
 
         if 'root_category' in request.json['data']:
             category = str(request.json['data']['root_category'])
@@ -28,7 +26,12 @@ def add_category():
         elif 'parent_category' in request.json['data'] and 'child_category' in request.json['data']:
             parent_category = request.json['data']['parent_category']
             child_category = request.json['data']['child_category']
-            node = Category(parent_category)
+            existing_category = Category.query.filter_by(name=request.json['data']['parent_category']).scalar()
+            if parent_category != existing_category.name:
+                response = json.jsonify({"status": "fail"})
+                response.status_code = 400
+                return response
+            node = existing_category
             Category(child_category, node)
             db.session.add(node)
             db.session.commit()

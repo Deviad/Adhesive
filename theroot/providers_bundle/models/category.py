@@ -6,7 +6,7 @@ class Category(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     parent_id = db.Column(db.Integer, db.ForeignKey(id))
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), unique=True, nullable=False)
     providers = db.relationship("Provider", secondary=category_provider_table, back_populates="categories")
     children = db.relationship(
         "Category",
