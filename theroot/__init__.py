@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 from theroot.users_bundle.controllers import users_bundle
+from theroot.providers_bundle.controllers import categories_bundle
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from theroot.db import *
 
@@ -19,6 +20,7 @@ if not database_exists(engine.url):
 else:
     print('The database exists: ' + str(database_exists(engine.url)))
 app.register_blueprint(users_bundle)
+app.register_blueprint(categories_bundle)
 
 Bcrypt(app)
 

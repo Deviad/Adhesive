@@ -1,6 +1,6 @@
 from theroot.db import *
 from theroot.providers_bundle.models.provider import category_provider_table
-
+from sqlalchemy.orm.collections import attribute_mapped_collection
 
 class Category(db.Model):
     __tablename__ = 'categories'
@@ -20,7 +20,7 @@ class Category(db.Model):
 
         # children will be represented as a dictionary
         # on the "name" attribute.
-        collection_class=db.attribute_mapped_collection('name'),
+        collection_class=attribute_mapped_collection('name'),
     )
 
     def __init__(self, name, parent=None):

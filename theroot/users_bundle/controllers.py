@@ -1,8 +1,7 @@
 import cgi
-from inspect import getmembers
 from pprint import pprint
-
 import sys
+
 from flask import Blueprint, request, render_template, json, Flask
 from flask.ext.bcrypt import Bcrypt
 
@@ -11,7 +10,6 @@ from theroot.users_bundle.models import UserInfo, Role, Address
 
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
-from theroot.users_bundle.helpers.current_user_helper import CurrentUserHelper
 from theroot.users_bundle.helpers.router_acl import router_acl
 from theroot.db import *
 from html import escape, unescape
@@ -21,7 +19,7 @@ from geohash import encode as geoe, decode as geod
 bcrypt = Bcrypt()
 
 
-users_bundle = Blueprint("user", __name__, url_prefix="/api")
+users_bundle = Blueprint("users_bundle", __name__, url_prefix="/api")
 
 
 def hash_password(password):
