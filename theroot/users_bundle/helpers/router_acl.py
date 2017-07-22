@@ -68,7 +68,9 @@ def router_acl(user_type):
                 elif user_type == ALL_REGISTERED_USERS:
 
                     roles = get_user_roles(current_user.id)
-                    if USER in roles:
+                    print('wonderful rolessss')
+                    pprint(roles)
+                    if any(c in roles for c in [USER, ADMINISTRATOR]):
                         return fn()
                     else:
                         response = json.jsonify({"status": "fail"})
