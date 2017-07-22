@@ -17,6 +17,7 @@ sys.path.insert(0, current_dir[:current_dir.rfind(path.sep)])
 from theroot.users_bundle.models.user import User
 from theroot.users_bundle.controllers import do_the_signup
 from theroot.services import *
+from config import *
 sys.path.pop(0)
 
 from theroot import create_app
@@ -32,7 +33,7 @@ class TestApp(object):
     def test_create_user(self, client):
         values = {
             "data": {
-                "email": "ziocaro01@gmail.com",
+                "email": "ziocaro02@gmail.com",
                 "password": "test",
                 "first_name": "ciccio",
                 "last_name": "pizzo",
@@ -49,8 +50,8 @@ class TestApp(object):
 
         }
 
-        with pytest.raises(SQLAlchemyError):
-            do_the_signup(values)
-            user_name = ', '.join(db.session.query(User.email).filter_by(email=values['data']['email']).first())
-            assert values['data']['email'] == user_name
+        do_the_signup(values)
+        rows = db.session.query(User.email).filter_by(email=values['data']['email']).all()
+        results = [row for (row,) in rows]
+        assert len(results) == 1
 
