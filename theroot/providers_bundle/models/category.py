@@ -1,4 +1,4 @@
-from theroot.db import *
+from theroot.services import *
 from theroot.providers_bundle.models.provider import category_provider_table
 from sqlalchemy.orm.collections import attribute_mapped_collection
 

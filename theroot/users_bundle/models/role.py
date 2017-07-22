@@ -1,5 +1,5 @@
 
-from theroot.db import *
+from theroot.services import *
 from theroot.users_bundle.models import role_user_table
 
 

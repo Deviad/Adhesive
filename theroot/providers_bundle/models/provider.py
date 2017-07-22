@@ -1,5 +1,5 @@
 
-from theroot.db import *
+from theroot.services import *
 
 category_provider_table = db.Table('category_provider', db.Model.metadata,
                            db.Column('providers_id', db.Integer, db.ForeignKey('providers.id', onupdate="cascade"), nullable=False),

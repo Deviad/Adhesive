@@ -5,7 +5,7 @@ from theroot.users_bundle.models.user import User
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import get_jwt_identity
 
-from theroot.db import *
+from theroot.services import *
 
 '''
 This class simply returns a user object.

@@ -2,7 +2,7 @@ from pprint import pprint
 
 import sys
 
-from theroot.db import db
+from theroot.services import db
 from theroot.users_bundle.models import User
 from theroot.users_bundle.models import Role
 

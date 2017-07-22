@@ -3,29 +3,28 @@ from pprint import pprint
 import sys
 
 from flask import Blueprint, request, render_template, json, Flask
-from flask.ext.bcrypt import Bcrypt
+
 
 from theroot.users_bundle.models.user import User, role_user_table
 from theroot.users_bundle.models import UserInfo, Role, Address
 
 from sqlalchemy.exc import SQLAlchemyError
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from theroot.users_bundle.helpers.router_acl import router_acl
-from theroot.db import *
+from theroot.services import *
 from html import escape, unescape
 import urllib.request
 from geohash import encode as geoe, decode as geod
 
-bcrypt = Bcrypt()
 
 
 users_bundle = Blueprint("users_bundle", __name__, url_prefix="/api")
 
 
+
+
 def hash_password(password):
     pw_hash = bcrypt.generate_password_hash(password)
     return pw_hash
-
 
 def do_the_signin(the_email, password):
     try:
@@ -47,9 +46,8 @@ def do_the_signin(the_email, password):
         response.status_code = 500
         return response
 
-
 @users_bundle.route("/user/validate_address", methods=['POST'])
-def validate_address():
+def validate_address(*args, **kwargs):
     if request.method == 'POST':
         if request.content_type == 'application/json':
 
@@ -62,20 +60,10 @@ def validate_address():
                 place_id = request.json['data']['place_id']
             # pprint(address)
 
-            try:
-                if not request.json['data']['selected']:
-                    with urllib.request.urlopen('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=' + converted_address + '&types=address' + '&key=' + app.config.get('GOOGLE_PLACES_API_KEY')) as response:
-                        google_json = json.loads(response.read())
-                    response.status_code = 200
-                    status = 'success'
-                    if google_json['status'] != 'OK':
-                        response.status_code = 400
-                        status = 'fail'
-                    response = json.jsonify({"status": status, "data": google_json})
-                    return response
-                else:
-                    with urllib.request.urlopen('https://maps.googleapis.com/maps/api/place/details/json?placeid=' + place_id + '&key=' + app.config.get('GOOGLE_PLACES_API_KEY')) as response:
-                        google_json = json.loads(response.read())
+        try:
+            if not request.json['data']['selected']:
+                with urllib.request.urlopen('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=' + converted_address + '&types=address' + '&key=' + app.config.get('GOOGLE_PLACES_API_KEY')) as response:
+                    google_json = json.loads(response.read())
                 response.status_code = 200
                 status = 'success'
                 if google_json['status'] != 'OK':
@@ -83,15 +71,25 @@ def validate_address():
                     status = 'fail'
                 response = json.jsonify({"status": status, "data": google_json})
                 return response
-            except BaseException:
-                response = json.jsonify({"status": "fail"})
-                response.status_code = 500
-                return response
+            else:
+                with urllib.request.urlopen('https://maps.googleapis.com/maps/api/place/details/json?placeid=' + place_id + '&key=' + app.config.get('GOOGLE_PLACES_API_KEY')) as response:
+                    google_json = json.loads(response.read())
+            response.status_code = 200
+            status = 'success'
+            if google_json['status'] != 'OK':
+                response.status_code = 400
+                status = 'fail'
+            response = json.jsonify({"status": status, "data": google_json})
+            return response
+        except BaseException:
+            response = json.jsonify({"status": "fail"})
+            response.status_code = 500
+            return response
 
 
 def do_the_signup(json_attributes):
   
-    try:
+    # try:
         user = User(json_attributes['data']['email'], hash_password(json_attributes['data']['password']))
         db.session.add(user)
         db.session.commit()
@@ -120,16 +118,16 @@ def do_the_signup(json_attributes):
         response.status_code = 201
         return response
 
-    except SQLAlchemyError:
-        db.session.close()
-        response = json.jsonify({"status": "fail"})
-        response.status_code = 400
-        return response
-    except BaseException:
-        db.session.close()
-        response = json.jsonify({"status": "fail"})
-        response.status_code = 500
-        return response
+    # except SQLAlchemyError:
+    #     db.session.close()
+    #     response = json.jsonify({"status": "fail"})
+    #     response.status_code = 400
+    #     return response
+    # except BaseException:
+    #     db.session.close()
+    #     response = json.jsonify({"status": "fail"})
+    #     response.status_code = 500
+    #     return response
 
 
 @users_bundle.route("/user", methods=['POST'])
@@ -168,7 +166,7 @@ def view_user():
 
 @users_bundle.route("/user/edit", methods=['POST'])
 @jwt_required
-@router_acl(3)
+@router_acl(2)
 def edit_user():
     only = ['email', 'password', 'first_name', 'last_name', 'facebook_id', 'linkedin_id', 'twitter_id']
     email_change = False

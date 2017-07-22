@@ -1,4 +1,4 @@
-from theroot.db import *
+from theroot.services import *
 
 role_user_table = db.Table('role_user', db.Model.metadata,
                            db.Column('users_id', db.Integer, db.ForeignKey('users.id', onupdate="cascade"), nullable=False),

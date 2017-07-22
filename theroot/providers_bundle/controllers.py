@@ -6,7 +6,7 @@ from theroot.providers_bundle.models import Category, Provider, category_provide
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from theroot.users_bundle.helpers.router_acl import router_acl
-from theroot.db import *
+from theroot.services import *
 
 categories_bundle = Blueprint("categories_bundle", __name__, url_prefix="/api")
 

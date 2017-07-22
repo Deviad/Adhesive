@@ -4,7 +4,7 @@ from sqlalchemy_utils import database_exists, create_database
 
 from theroot import create_app, users_bundle, categories_bundle
 # port = int(os.environ.get('PORT', 8080))
-from theroot.db import db
+from theroot.services import db
 app = create_app()
 engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 if not database_exists(engine.url):
